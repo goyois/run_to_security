@@ -17,9 +17,9 @@ public class IndexController {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder encoder;
 
-    @GetMapping({"", "/"})
-    public String index() {
-        return "index";
+    @GetMapping({ "", "/"})
+    public @ResponseBody String index() {
+        return "인덱스 페이지입니다.";
     }
 
     @GetMapping("/user")
