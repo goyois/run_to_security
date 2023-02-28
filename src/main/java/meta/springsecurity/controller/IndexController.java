@@ -3,6 +3,9 @@ package meta.springsecurity.controller;
 import lombok.RequiredArgsConstructor;
 import meta.springsecurity.entity.User;
 import meta.springsecurity.reposotory.UserRepository;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -56,5 +59,24 @@ public class IndexController {
         user.setPassword(encPassword);
         userRepository.save(user);  //회원가입은 잘 되지만 시큐리티로 로그인 불가 = 암호화해줘야함
         return "redirect:/loginForm";  //redirect 메서드를 통해 loginForm 페이지를 리턴
+    }
+
+
+    //관리자 전용 메뉴 생성방법 1번
+    //하나만 걸고 싶다라면
+    @Secured("ROLE_ADMIN")  //들어가지던 인포가 안들어가짐  = 특장 메서드에 조건을 걸어 ADMIN만 접근할 수 있음
+    @GetMapping("/info")
+    public @ResponseBody String info() {
+        return "개인정보";
+    }
+
+
+    //관리자 전용 메누 생성방법 2번
+    //두가지 이상의 직급의 사람들을 걸고 싶다
+    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")//들어가지던 인포가 안들어가짐  = 특장 메서드에 조건을 걸어 ADMIN만 접근할 수 있음
+    //@PostAuthorize 이 어노테이션도 있으나 PreAuthorize에서 다 처리가능
+    @GetMapping("/data")
+    public @ResponseBody String data() {
+        return "데이터정보";
     }
 }

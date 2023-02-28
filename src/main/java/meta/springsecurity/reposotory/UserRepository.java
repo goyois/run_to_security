@@ -13,3 +13,10 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     public User findByUsername(String username);  //JPA Query method
 
 }
+
+
+
+//5강 role 변경 sql
+//uodate user set role = 'ROLE_MANAGER' where id = 4;
+//update user set role = 'ROLE_ADMIN' where id = 5;
+//commit;
