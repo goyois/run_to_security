@@ -1,5 +1,7 @@
 package meta.springsecurity.security.config;
 
+import meta.springsecurity.security.oauth.PrincipalOauth2UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -13,6 +15,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 //@EnableGlobalMethodSecurity(securedEnabled = true)  //컨트롤러의 secured 어노테이션 활성화 1번 방법
 @EnableGlobalMethodSecurity(securedEnabled = true,prePostEnabled = true) //preAuthorize 어노테이션까지 활성화
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
+
+
+    @Autowired
+    private PrincipalOauth2UserService principalOauth2UserService;
 
 
     //해당 메서드의 리턴되는 오브젝트를 IoC로 등록해줌
@@ -34,6 +40,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .formLogin()// 1-2
                 .loginPage("/loginForm")  // 1-3 위 설정 추가로 로그인이 필요한 권한의 url로 접속 시 로그인패이지가 나옴 /2강
                 .loginProcessingUrl("/login")  //login주소가 호출되면 시큐리티가 낚아채서 대신 로그인을 진행하므로 별도의 로그인 컨트롤러가 필요없음
-                .defaultSuccessUrl( "/");
+                .defaultSuccessUrl( "/")
+                .and()
+                .oauth2Login()
+                .loginPage("/loginForm")
+                            //구글 로그인이 완료돤 뒤에 후처리가 필요함. Tip. 코드x (Oauth클라이언트 라이브러리 사용 시 액세스토큰 + 사용자 정보를 한방에 받는다)
+                .userInfoEndpoint()
+                .userService(principalOauth2UserService);
     }
 }
