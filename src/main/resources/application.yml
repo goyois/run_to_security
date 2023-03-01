@@ -31,9 +31,9 @@ spring:
       client:
         registration:
           google: # /oauth2/authorization/google ? ??? ???? ??.
-            client-id: 675664531081-tiof4dddpnr41vp7joquklkbclfts2kn.apps.googleusercontent.com
-            client-secret: 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
-            redirect-uri: http://localhost:8080/login/oauth2/code/google
+            client-id:  675664531081-tiof4dddpnr41vp7joquklkbclfts2kn.apps.googleusercontent.com
+            client-secret:  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
+            redirect-uri:  http://localhost:8080/login/oauth2/code/google
             scope:
              - email
              - profile

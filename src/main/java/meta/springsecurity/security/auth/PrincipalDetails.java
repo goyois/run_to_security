@@ -9,22 +9,34 @@ package meta.springsecurity.security.auth;
 //Security Session 에 있는 세션정보를 겟해서 꺼내면 Authentication 객체가 나오는데 이 안에서 UserDetails(PrincipalDetails)를 꺼내면 User오브젝트에 접근 가능한다
 
 
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import meta.springsecurity.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 
 
-public class PrincipalDetails  implements UserDetails {
+
+//세션의 정보를 찾을 때 사용자가 로그인을 일반로그인/Oauth 인지에 따라 컨트롤러에서 처리를 해주기 어렵기떄문에
+//PrincipalDetails에 두개를 전부 implements 사켜 묶어준 뒤 PrincipalDetails만 사용하면 세션 정보를 찾을 수 있다.
+@Data
+public class PrincipalDetails  implements UserDetails, OAuth2User {
 
     private User user;  // 콤포지션
 
     public PrincipalDetails(User user) {
         this.user = user;
+    }
+
+    @Override
+    public Map<String, Object> getAttributes() {
+        return null;
     }
 
     //해당 User의 권한을 리턴하는 곳
@@ -68,6 +80,11 @@ public class PrincipalDetails  implements UserDetails {
     @Override
     public boolean isEnabled() {  //활성화되었는가
         return true;
+    }
+
+    @Override
+    public String getName() {
+        return null;
     }
 
 
