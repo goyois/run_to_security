@@ -53,8 +53,13 @@ public class IndexController {
         return "인덱스 페이지입니다.";
     }
 
+    //OAuth 로그인을 해도 PrincipalDetails
+    //일반 로그인을 해도 PrincipalDetails 로 받을 수 있다
+    //@Authentication으로 접근하는 것을 권장
     @GetMapping("/user")
-    public @ResponseBody String user() {
+    public @ResponseBody String user(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        System.out.println("principalDetails :"+principalDetails.getUser());
+
         return "user";
     }
 

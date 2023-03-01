@@ -11,7 +11,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     // select * from user  where username = ? (파라미터로 들어오는 값 (username ))
     public User findByUsername(String username);  //JPA Query method
-
 }
 
 

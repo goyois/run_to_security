@@ -1,5 +1,12 @@
 package meta.springsecurity.security.oauth;
 
+import lombok.RequiredArgsConstructor;
+import meta.springsecurity.entity.User;
+import meta.springsecurity.reposotory.UserRepository;
+import meta.springsecurity.security.auth.PrincipalDetails;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -9,6 +16,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
 
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private UserRepository userRepository;  //해당 아이디로 회원가입이 되어 있는지를 위함
+
+    public PrincipalOauth2UserService(BCryptPasswordEncoder bCryptPasswordEncoder, UserRepository userRepository) {
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.userRepository = userRepository;
+    }
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -17,9 +31,30 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
         System.out.println("getClientRegistration :" +userRequest.getClientRegistration()); //registration 로 어떤 oauth 를 통해 로그인했는지 확인가능
         System.out.println("getAttributes :" +super.loadUser(userRequest).getAttributes());
 
-        OAuth2User oAuth2User = super.loadUser(userRequest);
+        OAuth2User oauth2User = super.loadUser(userRequest);
+        System.out.println("getAttributes :" + oauth2User.getAttributes());
 
-        return super.loadUser(userRequest);
+        String provider = userRequest.getClientRegistration().getClientId(); //google
+        String providerId = oauth2User.getAttribute("sub");
+        String username = provider+"_"+providerId; //google_111833099876978461700
+        String password = bCryptPasswordEncoder.encode("겟인데어");
+        String email = oauth2User.getAttribute("email");
+        String role = "ROLE_USER";
+
+        User userEntity = userRepository.findByUsername(username);
+
+        if (userEntity == null) {
+            userEntity = User.builder()
+                    .username(username)
+                    .password(password)
+                    .email(email)
+                    .role(role)
+                    .provider(provider)
+                    .providerId(providerId)
+                    .build();
+            userRepository.save(userEntity);
+        }
+        return new PrincipalDetails(userEntity,oauth2User.getAttributes());
     }
 }
 

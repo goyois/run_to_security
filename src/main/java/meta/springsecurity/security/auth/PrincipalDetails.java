@@ -29,14 +29,29 @@ import java.util.Map;
 public class PrincipalDetails  implements UserDetails, OAuth2User {
 
     private User user;  // 콤포지션
+    private Map<String, Object> attributes;
 
+
+    //일반 로그인 시 사용되는 생성자
     public PrincipalDetails(User user) {
         this.user = user;
     }
 
+    //OAuth 로그인 시 사용되는 생성자
+    public PrincipalDetails(User user, Map<String,Object> attributes) {
+        this.user = user;
+        this.attributes = attributes;
+    }
+
+
+    @Override
+    public <A> A getAttribute(String name) {
+        return OAuth2User.super.getAttribute(name);
+    }
+
     @Override
     public Map<String, Object> getAttributes() {
-        return null;
+        return attributes;
     }
 
     //해당 User의 권한을 리턴하는 곳
@@ -85,7 +100,7 @@ public class PrincipalDetails  implements UserDetails, OAuth2User {
     @Override
     public String getName() {
         return null;
-    }
+    }  //사용빈도 거의 없으므로 널값처리
 
 
     //위 조건값에 대하여

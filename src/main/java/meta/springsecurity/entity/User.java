@@ -1,8 +1,11 @@
 package meta.springsecurity.entity;
 
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 
@@ -14,6 +17,8 @@ import java.sql.Timestamp;
 
 @Entity
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
     @Id  //pk
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,4 +35,15 @@ public class User {
     private String provider;
     private String providerId;
 
+
+    @Builder
+    public User(String username, String password, String email, String role, Timestamp createDate, String provider, String providerId) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.role = role;
+        this.createDate = createDate;
+        this.provider = provider;
+        this.providerId = providerId;
+    }
 }
