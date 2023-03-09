@@ -32,6 +32,8 @@ public class User {
     private Timestamp createDate;
     //private Timestamp loginDate;  //마지막 로그인한 날짜
 
+
+
     private String provider;
     private String providerId;
 
